@@ -4,6 +4,12 @@ let bodyParser = require('body-parser');
 let path = require('path');
 let http = require('http');
 let socketio = require('socket.io');
+let mongoose = require('mongoose');
+let Message = require('./models/Message');
+let Room = require('./models/Room');
+let User = require('./models/User');
+
+mongoose.connect('mongodb://localhost/PornoChat');
 
 let app = express();
 
@@ -54,9 +60,30 @@ pornChannel.on('connection',function (socket) {
     });
 });
 
+app.get('/',async function (req,res){
+    let user = await User.create({
+        name : 'Huesos',
+        password : 'it is me',
+        age : 12
+    });
+    let room = await Room.create({
+        age : 18,
+        name : 'porn',
+        users : [user],
+    });
+    let message = await Message.create({
+        text : 'asasasa',
+        date : Date.now(),
+        user : user,
+        room : room
+    });
 
+    user.messages = [message];
+    user.rooms = [room];
+    user.save();
 
-app.get('/',function (req,res){
+    room.messages = [message];
+    room.save();
     res.render('index');
 });
 

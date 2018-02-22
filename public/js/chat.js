@@ -5,7 +5,7 @@ window.onload = function (){
 
     socket.emit('handshake',{
         name : name,
-        room : Math.random()
+        room : '1'
     });
 
     let messagesContainer = document.getElementById('messages');
